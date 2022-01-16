@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 12 jan. 2022 à 07:31
+-- Généré le : dim. 16 jan. 2022 à 21:59
 -- Version du serveur :  10.4.18-MariaDB
 -- Version de PHP : 8.0.5
 
@@ -37,7 +37,8 @@ CREATE TABLE `categorie` (
 --
 
 INSERT INTO `categorie` (`id`, `nom`) VALUES
-(15, 'Sunt aliquam volupt');
+(26, 'Fruit'),
+(27, 'Légume');
 
 -- --------------------------------------------------------
 
@@ -59,7 +60,30 @@ CREATE TABLE `produit` (
 --
 
 INSERT INTO `produit` (`id`, `nom`, `description`, `categorie`, `quantite`, `prix`) VALUES
-(22, 'Magna laudantium au', 'Et dignissimos obcae', 15, 97, 0);
+(34, 'Clémentine', 'c\'est bon mais pas très juteux', 26, 24, 2),
+(35, 'Orange', 'C\'est juteux mais aussi bon que la clémentine', 26, 16, 3),
+(36, 'Brocolis', 'Bon pour la santé mais pas très bon niveau gout', 27, 56, 4),
+(37, 'Salade', 'c\'est le meilleurs de tout les légumes', 27, 88, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `role`
+--
+
+CREATE TABLE `role` (
+  `id` tinyint(1) NOT NULL,
+  `role` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `role`
+--
+
+INSERT INTO `role` (`id`, `role`) VALUES
+(1, 'Membre'),
+(2, 'Admin'),
+(3, 'Super Admin');
 
 -- --------------------------------------------------------
 
@@ -72,7 +96,7 @@ CREATE TABLE `user` (
   `user_mail` varchar(255) NOT NULL,
   `user_password` varchar(255) NOT NULL,
   `user_registerDate` datetime NOT NULL,
-  `user_admin` tinyint(1) NOT NULL DEFAULT 0
+  `user_admin` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -80,8 +104,12 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `user_mail`, `user_password`, `user_registerDate`, `user_admin`) VALUES
-(2, 'aulucien1@gmail.com', '$2y$10$8XAJj/I8l6KkXKpJWO2PBeeSgYtHPTVcssEKpWzc2Q7suXSvgl546', '0000-00-00 00:00:00', 1),
-(3, 'luplex603@gmail.com', '$2y$10$h5K80fu0L2y45ah/3D.ji.WPH7847g2HJLlNdhOqNhrgSnVOAjq/y', '0000-00-00 00:00:00', 0);
+(2, 'aulucien1@gmail.com', '$2y$10$8XAJj/I8l6KkXKpJWO2PBeeSgYtHPTVcssEKpWzc2Q7suXSvgl546', '0000-00-00 00:00:00', 3),
+(18, 'luplex603@gmail.com', '$2y$10$tpsxmqhI9AsR37dfXW5iue1TJ4pvqT/IzvJomq7eA/WZjdZmAxjp6', '0000-00-00 00:00:00', 2),
+(19, 'fd@gmail', '$2y$10$lYsO/0soUh/yCFLi9gYM9OJqEpdtMBVCLfO7D.GNV.K1W9lZfi1..', '0000-00-00 00:00:00', 1),
+(20, 'aulucien2@gmail.com', '$2y$10$ax6laxOubXIB6.fV7L3GmeulIIJaV/iCgAs2AatWZz46y2KiZQmqW', '0000-00-00 00:00:00', 1),
+(21, 'aulucien3@gmail.com', '$2y$10$W5hIQEiVeQwhPcaLMZk60OBpqapmjJIg4J/QBjdld1cNz/hKA.La.', '0000-00-00 00:00:00', 2),
+(22, 'aulucien4@gmail.com', '$2y$10$HbQHH11HCrY.XHE4sVO3iOa7/Q8TphRnAPS1Jps.YpPzYwLPN72py', '0000-00-00 00:00:00', 1);
 
 --
 -- Index pour les tables déchargées
@@ -101,10 +129,17 @@ ALTER TABLE `produit`
   ADD KEY `categorie` (`categorie`);
 
 --
+-- Index pour la table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_admin` (`user_admin`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
@@ -114,19 +149,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `categorie`
 --
 ALTER TABLE `categorie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT pour la table `produit`
 --
 ALTER TABLE `produit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT pour la table `role`
+--
+ALTER TABLE `role`
+  MODIFY `id` tinyint(1) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Contraintes pour les tables déchargées
@@ -137,6 +178,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `produit`
   ADD CONSTRAINT `produit_ibfk_1` FOREIGN KEY (`categorie`) REFERENCES `categorie` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`user_admin`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
